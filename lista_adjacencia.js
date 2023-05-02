@@ -22,7 +22,7 @@ class ListaAdjacencia {
         return this.n_arestas;
     }
 
-    adicionarAresta(rotulo_vertice, vertice_adjacente, peso){
+    adicionarAresta(rotulo_vertice, vertice_adjacente, peso = 1){
         // verifica se o vértice correspondente existe
         if(vertice_adjacente >= this.vertices.length){
             console.log("Vértice inexistente.");
