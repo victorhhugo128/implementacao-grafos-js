@@ -6,7 +6,7 @@ class No {
     }
 }
 
-class ListaAdjacencia {
+class Grafo {
     constructor(n_vertices){
         this.vertices = Array(n_vertices).fill().map((_, indice) => new No(indice, 0, null));
         this.n_arestas = 0;
@@ -99,7 +99,7 @@ class ListaAdjacencia {
 }
 
 
-let lista = new ListaAdjacencia(5);
+let lista = new Grafo(5);
 
 lista.mostrarVertices();
 
