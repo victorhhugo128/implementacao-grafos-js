@@ -1,4 +1,4 @@
-class No {
+class No {  // classe auxiliar para lista adjacencia no grafo
     constructor(rotulo, peso, prox_no){
         this.rotulo = rotulo;
         this.peso = peso;
@@ -10,6 +10,7 @@ class Grafo {
     constructor(n_vertices){
         this.vertices = Array(n_vertices).fill().map((_, indice) => new No(indice, 0, null));
         this.n_arestas = 0;
+        this.n_vertices = n_vertices;
     }
 
     nVertices(){
@@ -98,29 +99,125 @@ class Grafo {
     }
 }
 
+class Vertice{  // classe auxiliar para busca
+    constructor(){
+        this.descoberta = null;
+        this.termino = null;
+        this.antecessor = null;
+        this.cor = null;
+    }
+}
 
-let lista = new Grafo(5);
+class BuscaProfundidade{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.vertices = Array(this.grafo.n_vertices).fill().map(() => new Vertice());
+        this.tempo = 0;
+    }
 
-lista.mostrarVertices();
+    BRANCO(){
+        return 0;
+    }
 
-lista.adicionarAresta(0, 0, 1);
-lista.adicionarAresta(0, 1, 1);
-lista.adicionarAresta(0, 2, 1);
-lista.adicionarAresta(0, 2, 1);
-lista.adicionarAresta(0, 1, 1);
+    CINZA(){
+        return 1;
+    }
 
-lista.adicionarAresta(1, 4, 12);
-lista.adicionarAresta(1, 2, 5);
-lista.adicionarAresta(1, 1, 9);
-lista.adicionarAresta(1, 3, 5);
+    PRETO(){
+        return 2;
+    }
 
-lista.adicionarAresta(4, 2, 4);
-lista.adicionarAresta(4, 4, 1);
-lista.adicionarAresta(4, 1, 7);
+    dfs(vertice_inicial){
+        for(let vertice of this.vertices){
+            vertice.cor = this.BRANCO();
+        }
 
-lista.mostrarVertices();
+        const n_vertices = this.grafo.n_vertices;
+        let vertice_atual = vertice_inicial;
 
-lista.nVertices();
-lista.nArestas();
+        if(vertice_inicial >= n_vertices){
+            console.log("Vértice inicial inválido.");
+            return;
+        }
+
+        do{
+            if(this.vertices[vertice_atual].cor == this.BRANCO()){
+                console.log("passou!");
+                this.dfsVisita(vertice_atual);
+            }
+
+            vertice_atual++;
+            vertice_atual = vertice_atual % n_vertices;
+        }while(vertice_atual != vertice_inicial);
+    }
+
+    dfsVisita(vertice){
+        let vertice_atual = this.vertices[vertice];
+        vertice_atual.cor = this.CINZA();
+        this.tempo++;
+        vertice_atual.descoberta = this.tempo;
+
+        let prox_adj = this.grafo.vertices[vertice].prox_no;
+
+        while(prox_adj != null){
+            if(this.vertices[prox_adj.rotulo].cor == this.BRANCO()){
+                this.vertices[prox_adj.rotulo].antecessor = vertice;
+                this.dfsVisita(prox_adj.rotulo);
+            }
+            prox_adj = prox_adj.prox_no;
+        }
+
+        vertice_atual.cor = this.PRETO();
+        this.tempo++;
+        vertice_atual.termino = this.tempo;
+    }
+
+    mostraResultado(){
+        for(const vertice in this.vertices){
+            console.log(`Antecessor[${vertice}] = ${this.vertices[vertice].antecessor}\nDescoberta[${vertice}] = ${this.vertices[vertice].descoberta}\nTermino[${vertice}] = ${this.vertices[vertice].termino}\n\n`)
+        }
+    }
+}
+
+
+// let lista = new Grafo(5);
+
+// lista.mostrarVertices();
+
+// lista.adicionarAresta(0, 0, 1);
+// lista.adicionarAresta(0, 1, 1);
+// lista.adicionarAresta(0, 2, 1);
+// lista.adicionarAresta(0, 2, 1);
+// lista.adicionarAresta(0, 1, 1);
+
+// lista.adicionarAresta(1, 4, 12);
+// lista.adicionarAresta(1, 2, 5);
+// lista.adicionarAresta(1, 1, 9);
+// lista.adicionarAresta(1, 3, 5);
+
+// lista.adicionarAresta(4, 2, 4);
+// lista.adicionarAresta(4, 4, 1);
+// lista.adicionarAresta(4, 1, 7);
+
+// lista.mostrarVertices();
+
+// lista.nVertices();
+// lista.nArestas();
 
 // console.log(lista.vertices.length)
+
+
+
+let grafo_teste = new Grafo(3);
+
+grafo_teste.adicionarAresta(1, 2);
+grafo_teste.adicionarAresta(2, 0);
+
+grafo_teste.mostrarAdjacencias(0);
+grafo_teste.mostrarAdjacencias(1);
+grafo_teste.mostrarAdjacencias(2);
+
+busca_profundidade = new BuscaProfundidade(grafo_teste);
+
+busca_profundidade.dfs(1);
+busca_profundidade.mostraResultado();
