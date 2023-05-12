@@ -200,7 +200,7 @@ class BuscaLargura{
     }
 
     bfs(vertice_inicial){
-        for(vertice in this.vertices){
+        for(let vertice in this.vertices){
             if(vertice == vertice_inicial){
                 continue;
             }
@@ -215,6 +215,7 @@ class BuscaLargura{
 
         let fila = Array();
         let prox_adj = null;
+        let vertice_atual = null;
 
         fila.unshift(vertice_inicial);
 
@@ -228,6 +229,7 @@ class BuscaLargura{
                     this.vertices[prox_adj.rotulo].antecessor = vertice_atual;
                     fila.unshift(prox_adj.rotulo);
                 }
+                prox_adj = prox_adj.prox_no;
             }
             this.vertices[vertice_atual].cor = this.PRETO();
         }
@@ -269,16 +271,32 @@ class BuscaLargura{
 
 
 
-let grafo_teste = new Grafo(3);
+// let grafo_teste = new Grafo(3);
 
-grafo_teste.adicionarAresta(1, 2);
-grafo_teste.adicionarAresta(2, 0);
+// grafo_teste.adicionarAresta(1, 2);
+// grafo_teste.adicionarAresta(2, 0);
 
-grafo_teste.mostrarAdjacencias(0);
-grafo_teste.mostrarAdjacencias(1);
-grafo_teste.mostrarAdjacencias(2);
+// grafo_teste.mostrarAdjacencias(0);
+// grafo_teste.mostrarAdjacencias(1);
+// grafo_teste.mostrarAdjacencias(2);
 
-busca_profundidade = new BuscaProfundidade(grafo_teste);
+// busca_profundidade = new BuscaProfundidade(grafo_teste);
 
-busca_profundidade.dfs(1);
-busca_profundidade.mostraResultado();
+// busca_profundidade.dfs(1);
+// busca_profundidade.mostraResultado();
+
+let grafo_teste = new Grafo(8);
+
+grafo_teste.adicionarAresta(0, 3);
+grafo_teste.adicionarAresta(0, 4);
+grafo_teste.adicionarAresta(0, 1);
+grafo_teste.adicionarAresta(0, 2);
+grafo_teste.adicionarAresta(1, 5);
+grafo_teste.adicionarAresta(2, 5);
+grafo_teste.adicionarAresta(2, 6);
+grafo_teste.adicionarAresta(6, 7);
+
+busca_largura = new BuscaLargura(grafo_teste);
+
+busca_largura.bfs(0);
+busca_largura.mostraResultado();
