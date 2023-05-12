@@ -180,6 +180,67 @@ class BuscaProfundidade{
 }
 
 
+class BuscaLargura{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.vertices = Array(this.grafo.n_vertices).fill().map(() => new Vertice());
+        this.tempo = 0;
+    }
+
+    BRANCO(){
+        return 0;
+    }
+
+    CINZA(){
+        return 1;
+    }
+
+    PRETO(){
+        return 2;
+    }
+
+    bfs(vertice_inicial){
+        for(vertice in this.vertices){
+            if(vertice == vertice_inicial){
+                continue;
+            }
+            this.vertices[vertice].cor = this.BRANCO();
+            this.vertices[vertice].descoberta = Number.MAX_SAFE_INTEGER;
+            this.vertices[vertice].antecessor = null;
+        }
+
+        this.vertices[vertice_inicial].cor = this.CINZA();
+        this.vertices[vertice_inicial].descoberta = 0;
+        this.vertices[vertice_inicial].antecessor = null;
+
+        let fila = Array();
+        let prox_adj = null;
+
+        fila.unshift(vertice_inicial);
+
+        while(fila.length != 0){
+            vertice_atual = fila.pop();
+            prox_adj = this.grafo.vertices[vertice_atual].prox_no;
+            while(prox_adj != null){
+                if(this.vertices[prox_adj.rotulo].cor == this.BRANCO()){
+                    this.vertices[prox_adj.rotulo].cor = this.CINZA();
+                    this.vertices[prox_adj.rotulo].descoberta = this.vertices[vertice_atual].descoberta + 1;
+                    this.vertices[prox_adj.rotulo].antecessor = vertice_atual;
+                    fila.unshift(prox_adj.rotulo);
+                }
+            }
+            this.vertices[vertice_atual].cor = this.PRETO();
+        }
+    }
+
+    mostraResultado(){
+        for(const vertice in this.vertices){
+            console.log(`Antecessor[${vertice}] = ${this.vertices[vertice].antecessor}\nDescoberta[${vertice}] = ${this.vertices[vertice].descoberta}\n\n`)
+        }
+    }
+}
+
+
 // let lista = new Grafo(5);
 
 // lista.mostrarVertices();
