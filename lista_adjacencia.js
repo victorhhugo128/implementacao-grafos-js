@@ -7,10 +7,11 @@ class No {  // classe auxiliar para lista adjacencia no grafo
 }
 
 class Grafo {
-    constructor(n_vertices){
+    constructor(n_vertices, direcionado = true){
         this.vertices = Array(n_vertices).fill().map((_, indice) => new No(indice, 0, null));
         this.n_arestas = 0;
         this.n_vertices = n_vertices;
+        this.direcionado = direcionado;
     }
 
     nVertices(){
@@ -23,13 +24,7 @@ class Grafo {
         return this.n_arestas;
     }
 
-    adicionarAresta(rotulo_vertice, vertice_adjacente, peso = 1){
-        // verifica se o vértice correspondente existe
-        if(vertice_adjacente >= this.vertices.length){
-            console.log("Vértice inexistente.");
-            return;
-        }
-
+    adicionarNaLista(rotulo_vertice, vertice_adjacente, peso){
         // verifica se já existe uma aresta correspondente e, caso positivo, atualiza o peso da aresta
         let no_atual = this.vertices[rotulo_vertice].prox_no;
         let no_anterior = this.vertices[rotulo_vertice];
@@ -61,6 +56,20 @@ class Grafo {
         else{
             no_novo = new No(vertice_adjacente, peso, null);
             no_anterior.prox_no = no_novo;
+        }
+    }
+
+    adicionarAresta(rotulo_vertice, vertice_adjacente, peso = 1){
+        // verifica se o vértice correspondente existe
+        if(vertice_adjacente >= this.vertices.length){
+            console.log("Vértice inexistente.");
+            return;
+        }
+
+        this.adicionarNaLista(rotulo_vertice, vertice_adjacente, peso);
+
+        if(!this.direcionado){
+            this.adicionarNaLista(vertice_adjacente, rotulo_vertice, peso);
         }
 
         this.n_arestas++;
@@ -243,31 +252,31 @@ class BuscaLargura{
 }
 
 
-// let lista = new Grafo(5);
+let lista = new Grafo(5, false);
 
-// lista.mostrarVertices();
+lista.mostrarVertices();
 
-// lista.adicionarAresta(0, 0, 1);
-// lista.adicionarAresta(0, 1, 1);
-// lista.adicionarAresta(0, 2, 1);
-// lista.adicionarAresta(0, 2, 1);
-// lista.adicionarAresta(0, 1, 1);
+lista.adicionarAresta(0, 0, 1);
+lista.adicionarAresta(0, 1, 1);
+lista.adicionarAresta(0, 2, 1);
+lista.adicionarAresta(0, 2, 1);
+lista.adicionarAresta(0, 1, 1);
 
-// lista.adicionarAresta(1, 4, 12);
-// lista.adicionarAresta(1, 2, 5);
-// lista.adicionarAresta(1, 1, 9);
-// lista.adicionarAresta(1, 3, 5);
+lista.adicionarAresta(1, 4, 12);
+lista.adicionarAresta(1, 2, 5);
+lista.adicionarAresta(1, 1, 9);
+lista.adicionarAresta(1, 3, 5);
 
-// lista.adicionarAresta(4, 2, 4);
-// lista.adicionarAresta(4, 4, 1);
-// lista.adicionarAresta(4, 1, 7);
+lista.adicionarAresta(4, 2, 4);
+lista.adicionarAresta(4, 4, 1);
+lista.adicionarAresta(4, 1, 7);
 
-// lista.mostrarVertices();
+lista.mostrarVertices();
 
-// lista.nVertices();
-// lista.nArestas();
+lista.nVertices();
+lista.nArestas();
 
-// console.log(lista.vertices.length)
+console.log(lista.vertices.length)
 
 
 
@@ -285,18 +294,18 @@ class BuscaLargura{
 // busca_profundidade.dfs(1);
 // busca_profundidade.mostraResultado();
 
-let grafo_teste = new Grafo(8);
+// let grafo_teste = new Grafo(8);
 
-grafo_teste.adicionarAresta(0, 3);
-grafo_teste.adicionarAresta(0, 4);
-grafo_teste.adicionarAresta(0, 1);
-grafo_teste.adicionarAresta(0, 2);
-grafo_teste.adicionarAresta(1, 5);
-grafo_teste.adicionarAresta(2, 5);
-grafo_teste.adicionarAresta(2, 6);
-grafo_teste.adicionarAresta(6, 7);
+// grafo_teste.adicionarAresta(0, 3);
+// grafo_teste.adicionarAresta(0, 4);
+// grafo_teste.adicionarAresta(0, 1);
+// grafo_teste.adicionarAresta(0, 2);
+// grafo_teste.adicionarAresta(1, 5);
+// grafo_teste.adicionarAresta(2, 5);
+// grafo_teste.adicionarAresta(2, 6);
+// grafo_teste.adicionarAresta(6, 7);
 
-busca_largura = new BuscaLargura(grafo_teste);
+// busca_largura = new BuscaLargura(grafo_teste);
 
-busca_largura.bfs(0);
-busca_largura.mostraResultado();
+// busca_largura.bfs(0);
+// busca_largura.mostraResultado();
