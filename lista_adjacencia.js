@@ -153,7 +153,6 @@ class BuscaProfundidade{
 
         do{
             if(this.vertices[vertice_atual].cor == this.BRANCO()){
-                console.log("passou!");
                 this.dfsVisita(vertice_atual);
             }
 
@@ -341,6 +340,83 @@ class BellmanFord{
     }
 }
 
+
+class ComponentesConectados{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.vertices = Array(this.grafo.n_vertices).fill().map(() => new Vertice());
+        this.tempo = 0;
+        this.componenentes_conectados = [];
+        this.id = 0;
+    }
+
+    BRANCO(){
+        return 0;
+    }
+
+    CINZA(){
+        return 1;
+    }
+
+    PRETO(){
+        return 2;
+    }
+
+    encontrar_componentes(){
+        for(let vertice of this.vertices){
+            vertice.cor = this.BRANCO();
+        }
+
+        const n_vertices = this.grafo.n_vertices;
+        let vertice_atual = 0;  // começa do primeiro vértice
+
+        for(let vertice_atual = 0; vertice_atual < this.vertices.length; vertice_atual++){
+            if(this.vertices[vertice_atual].cor == this.BRANCO()){
+                this.componenentes_conectados.push([]);
+                this.dfsVisita(vertice_atual);
+                this.id++;
+            }
+        }
+            
+    }
+
+    dfsVisita(vertice){
+        if(this.grafo.direcionado){
+             console.log("impossível achar componentes conectados em um grafo direcionado.");
+             return;
+        }
+        let vertice_atual = this.vertices[vertice];
+        vertice_atual.cor = this.CINZA();
+        this.tempo++;
+        vertice_atual.descoberta = this.tempo;
+        this.componenentes_conectados[this.id].push(vertice)
+
+        let prox_adj = this.grafo.vertices[vertice].prox_no;
+
+        while(prox_adj != null){
+            if(this.vertices[prox_adj.rotulo].cor == this.BRANCO()){
+                this.vertices[prox_adj.rotulo].antecessor = vertice;
+                this.dfsVisita(prox_adj.rotulo);
+            }
+            prox_adj = prox_adj.prox_no;
+        }
+
+        vertice_atual.cor = this.PRETO();
+        this.tempo++;
+        vertice_atual.termino = this.tempo;
+    }
+
+    mostraResultado(){
+        for(const vertice in this.vertices){
+            console.log(`Antecessor[${vertice}] = ${this.vertices[vertice].antecessor}\nDescoberta[${vertice}] = ${this.vertices[vertice].descoberta}\nTermino[${vertice}] = ${this.vertices[vertice].termino}\n\n`)
+        }
+        console.log("Componentes conectados: ");
+        for(const componente in this.componenentes_conectados){
+            console.log(`Componente ${componente}: ${this.componenentes_conectados[componente]}`)
+        }
+    }
+}
+
 // let lista = new Grafo(5, false);
 
 // lista.mostrarVertices();
@@ -430,19 +506,33 @@ class BellmanFord{
 // console.log(floyd_warshall.matriz);
 
 
-let grafo = new Grafo(6, true);
+// let grafo = new Grafo(6, true);
 
-grafo.adicionarAresta(0, 2, 2);
-grafo.adicionarAresta(1, 0, 1);
-grafo.adicionarAresta(2, 1, -2);
-grafo.adicionarAresta(3, 0, -4);
-grafo.adicionarAresta(3, 2, -1);
-grafo.adicionarAresta(4, 3, 1);
-grafo.adicionarAresta(5, 4, 8);
-grafo.adicionarAresta(5, 0, 10);
+// grafo.adicionarAresta(0, 2, 2);
+// grafo.adicionarAresta(1, 0, 1);
+// grafo.adicionarAresta(2, 1, -2);
+// grafo.adicionarAresta(3, 0, -4);
+// grafo.adicionarAresta(3, 2, -1);
+// grafo.adicionarAresta(4, 3, 1);
+// grafo.adicionarAresta(5, 4, 8);
+// grafo.adicionarAresta(5, 0, 10);
 
-let bellman_ford = new BellmanFord(grafo);
+// let bellman_ford = new BellmanFord(grafo);
 
-bellman_ford.encontrar_caminhos(5);
+// bellman_ford.encontrar_caminhos(5);
 
-bellman_ford.mostrar_resultado();
+// bellman_ford.mostrar_resultado();
+
+let grafo = new Grafo(8, false);
+
+grafo.adicionarAresta(0, 1);
+grafo.adicionarAresta(1, 2);
+
+grafo.adicionarAresta(4, 5);
+grafo.adicionarAresta(5, 6);
+
+let componentes_conectados = new ComponentesConectados(grafo);
+
+componentes_conectados.encontrar_componentes();
+
+componentes_conectados.mostraResultado();
