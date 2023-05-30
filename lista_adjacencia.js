@@ -1,3 +1,5 @@
+const fila_de_prioridade = require("./fila_de_prioridade");
+
 class No {  // classe auxiliar para lista adjacencia no grafo
     constructor(rotulo, peso, prox_no){
         this.rotulo = rotulo;
@@ -251,32 +253,51 @@ class BuscaLargura{
     }
 }
 
+class Dijkstra{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.fila_de_prioridade = new fila_de_prioridade.FilaPrioridade();
+        this.conjunto_final = [];
+    }
 
-let lista = new Grafo(5, false);
+    encontrar_caminhos(fonte){
+        this.fila_de_prioridade.inicializar_fila(this.grafo, fonte);
+        let min_heap;
 
-lista.mostrarVertices();
+        while(this.fila_de_prioridade.vertices.length > 0){
+            min_heap = this.fila_de_prioridade.retirar_heap_min();
+            this.conjunto_final.push(min_heap);
+            this.fila_de_prioridade.relaxar_vertice(this.grafo.vertices[min_heap.vertice], min_heap)
+        }
 
-lista.adicionarAresta(0, 0, 1);
-lista.adicionarAresta(0, 1, 1);
-lista.adicionarAresta(0, 2, 1);
-lista.adicionarAresta(0, 2, 1);
-lista.adicionarAresta(0, 1, 1);
+    }
+}
 
-lista.adicionarAresta(1, 4, 12);
-lista.adicionarAresta(1, 2, 5);
-lista.adicionarAresta(1, 1, 9);
-lista.adicionarAresta(1, 3, 5);
+// let lista = new Grafo(5, false);
 
-lista.adicionarAresta(4, 2, 4);
-lista.adicionarAresta(4, 4, 1);
-lista.adicionarAresta(4, 1, 7);
+// lista.mostrarVertices();
 
-lista.mostrarVertices();
+// lista.adicionarAresta(0, 0, 1);
+// lista.adicionarAresta(0, 1, 1);
+// lista.adicionarAresta(0, 2, 1);
+// lista.adicionarAresta(0, 2, 1);
+// lista.adicionarAresta(0, 1, 1);
 
-lista.nVertices();
-lista.nArestas();
+// lista.adicionarAresta(1, 4, 12);
+// lista.adicionarAresta(1, 2, 5);
+// lista.adicionarAresta(1, 1, 9);
+// lista.adicionarAresta(1, 3, 5);
 
-console.log(lista.vertices.length)
+// lista.adicionarAresta(4, 2, 4);
+// lista.adicionarAresta(4, 4, 1);
+// lista.adicionarAresta(4, 1, 7);
+
+// lista.mostrarVertices();
+
+// lista.nVertices();
+// lista.nArestas();
+
+// console.log(lista.vertices.length)
 
 
 
@@ -309,3 +330,18 @@ console.log(lista.vertices.length)
 
 // busca_largura.bfs(0);
 // busca_largura.mostraResultado();
+
+let grafo = new Grafo(5, true);
+
+grafo.adicionarAresta(0, 1, 4);
+grafo.adicionarAresta(0, 2, 2);
+grafo.adicionarAresta(1, 4, 5);
+grafo.adicionarAresta(2, 1, 1);
+grafo.adicionarAresta(2, 3, 3);
+grafo.adicionarAresta(3, 4, 1);
+
+let dijkstra = new Dijkstra(grafo);
+
+dijkstra.encontrar_caminhos(0);
+
+console.log(dijkstra.conjunto_final);
