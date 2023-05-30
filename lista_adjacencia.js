@@ -273,6 +273,39 @@ class Dijkstra{
     }
 }
 
+class FloydWarshall{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.n_vertices = this.grafo.nVertices();
+        this.matriz = Array(this.n_vertices).fill().map((_,indice) => Array(this.n_vertices).fill().map((_, indice) => Number.MAX_SAFE_INTEGER)); 
+    }
+
+    encontrar_caminhos(){
+        for(let diagonal = 0; diagonal < this.n_vertices; diagonal++){
+            this.matriz[diagonal][diagonal] = 0;
+        }
+        
+        let adjacencia = null;
+        for(let vertice of this.grafo.vertices){
+            adjacencia = vertice.prox_no;
+            while(adjacencia != null){
+                this.matriz[vertice.rotulo][adjacencia.rotulo] = adjacencia.peso;
+                adjacencia = adjacencia.prox_no;
+            }
+        }
+
+        for(let k = 0; k < this.n_vertices; k++){
+            for(let j = 0; j < this.n_vertices; j++){
+                for(let i = 0; i < this.n_vertices; i++){
+                    if(this.matriz[i][j] > this.matriz[i][k] + this.matriz[k][j]){
+                        this.matriz[i][j] = this.matriz[i][k] + this.matriz[k][j];
+                    }
+                }
+            }
+        }
+    }
+}
+
 // let lista = new Grafo(5, false);
 
 // lista.mostrarVertices();
@@ -331,17 +364,32 @@ class Dijkstra{
 // busca_largura.bfs(0);
 // busca_largura.mostraResultado();
 
-let grafo = new Grafo(5, true);
+// let grafo = new Grafo(5, true);
 
-grafo.adicionarAresta(0, 1, 4);
-grafo.adicionarAresta(0, 2, 2);
-grafo.adicionarAresta(1, 4, 5);
-grafo.adicionarAresta(2, 1, 1);
-grafo.adicionarAresta(2, 3, 3);
-grafo.adicionarAresta(3, 4, 1);
+// grafo.adicionarAresta(0, 1, 4);
+// grafo.adicionarAresta(0, 2, 2);
+// grafo.adicionarAresta(1, 4, 5);
+// grafo.adicionarAresta(2, 1, 1);
+// grafo.adicionarAresta(2, 3, 3);
+// grafo.adicionarAresta(3, 4, 1);
 
-let dijkstra = new Dijkstra(grafo);
+// let dijkstra = new Dijkstra(grafo);
 
-dijkstra.encontrar_caminhos(0);
+// dijkstra.encontrar_caminhos(0);
 
-console.log(dijkstra.conjunto_final);
+// console.log(dijkstra.conjunto_final);
+
+
+let grafo = new Grafo(4, true);
+
+grafo.adicionarAresta(0, 2, -2);
+grafo.adicionarAresta(1, 0, 4);
+grafo.adicionarAresta(1, 2, 3);
+grafo.adicionarAresta(2, 3, 2);
+grafo.adicionarAresta(3, 1, -1);
+
+let floyd_warshall = new FloydWarshall(grafo);
+
+floyd_warshall.encontrar_caminhos();
+
+console.log(floyd_warshall.matriz);
