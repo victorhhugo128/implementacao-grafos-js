@@ -306,6 +306,41 @@ class FloydWarshall{
     }
 }
 
+class BellmanFord{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.vertices = Array(this.grafo.nVertices()).fill().map((_, indice) => [Number.MAX_SAFE_INTEGER, null]); // this.vertices = [[distancia, antecessor]]; indice = vertice
+    }
+
+    encontrar_caminhos(vertice_inicial){
+        this.vertices[vertice_inicial][0] = 0;  // inicializa do vértice escolhido
+        let adjacencia = null;
+
+        for(let iteracao = 0; iteracao < this.vertices.length - 1; iteracao++){
+            for(let vertice in this.vertices){
+                if(this.vertices[vertice][0] < Number.MAX_SAFE_INTEGER){ // verifica se o vértice já foi descoberto
+                    adjacencia = this.grafo.vertices[vertice].prox_no;
+                    while(adjacencia != null){  // anda pelas adjacencias do vértice
+                        if(this.vertices[adjacencia.rotulo][0] > adjacencia.peso + this.vertices[vertice][0]){
+                            this.vertices[adjacencia.rotulo][0] = adjacencia.peso + this.vertices[vertice][0];  // atualiza distancia
+                            this.vertices[adjacencia.rotulo][1] = this.grafo.vertices[vertice].rotulo;    // atualiza antecessor
+                        }
+
+                        adjacencia = adjacencia.prox_no;
+                    }
+                }
+            }
+        }
+    }
+
+    mostrar_resultado(){
+        for(let vertice in this.vertices){
+            console.log(`Distância[${vertice}]: ${this.vertices[vertice][0]}\nAntecessor[${vertice}]: ${this.vertices[vertice][1]}\n`)
+            console.log(``)
+        }
+    }
+}
+
 // let lista = new Grafo(5, false);
 
 // lista.mostrarVertices();
@@ -380,16 +415,34 @@ class FloydWarshall{
 // console.log(dijkstra.conjunto_final);
 
 
-let grafo = new Grafo(4, true);
+// let grafo = new Grafo(4, true);
 
-grafo.adicionarAresta(0, 2, -2);
-grafo.adicionarAresta(1, 0, 4);
-grafo.adicionarAresta(1, 2, 3);
-grafo.adicionarAresta(2, 3, 2);
-grafo.adicionarAresta(3, 1, -1);
+// grafo.adicionarAresta(0, 2, -2);
+// grafo.adicionarAresta(1, 0, 4);
+// grafo.adicionarAresta(1, 2, 3);
+// grafo.adicionarAresta(2, 3, 2);
+// grafo.adicionarAresta(3, 1, -1);
 
-let floyd_warshall = new FloydWarshall(grafo);
+// let floyd_warshall = new FloydWarshall(grafo);
 
-floyd_warshall.encontrar_caminhos();
+// floyd_warshall.encontrar_caminhos();
 
-console.log(floyd_warshall.matriz);
+// console.log(floyd_warshall.matriz);
+
+
+let grafo = new Grafo(6, true);
+
+grafo.adicionarAresta(0, 2, 2);
+grafo.adicionarAresta(1, 0, 1);
+grafo.adicionarAresta(2, 1, -2);
+grafo.adicionarAresta(3, 0, -4);
+grafo.adicionarAresta(3, 2, -1);
+grafo.adicionarAresta(4, 3, 1);
+grafo.adicionarAresta(5, 4, 8);
+grafo.adicionarAresta(5, 0, 10);
+
+let bellman_ford = new BellmanFord(grafo);
+
+bellman_ford.encontrar_caminhos(5);
+
+bellman_ford.mostrar_resultado();
