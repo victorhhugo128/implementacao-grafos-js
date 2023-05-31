@@ -339,6 +339,7 @@ class BellmanFord{
                 if(this.vertices[adjacencia.rotulo][0] > this.vertices[vertice.rotulo][0] + adjacencia.peso){
                     this.ciclo_negativo = true;
                 }
+                adjacencia = adjacencia.prox_no;
             }
         }
 
@@ -523,33 +524,35 @@ class ComponentesConectados{
 // console.log(floyd_warshall.matriz);
 
 
-// let grafo = new Grafo(6, true);
+let grafo = new Grafo(6, true);
 
-// grafo.adicionarAresta(0, 2, 2);
-// grafo.adicionarAresta(1, 0, 1);
-// grafo.adicionarAresta(2, 1, -2);
-// grafo.adicionarAresta(3, 0, -4);
-// grafo.adicionarAresta(3, 2, -1);
-// grafo.adicionarAresta(4, 3, 1);
-// grafo.adicionarAresta(5, 4, 8);
-// grafo.adicionarAresta(5, 0, 10);
+grafo.adicionarAresta(0, 2, 2);
+grafo.adicionarAresta(1, 0, 1);
+grafo.adicionarAresta(2, 1, -2);
+grafo.adicionarAresta(3, 0, -4);
+grafo.adicionarAresta(3, 2, -1);
+grafo.adicionarAresta(4, 3, 1);
+grafo.adicionarAresta(5, 4, 8);
+grafo.adicionarAresta(5, 0, 10);
 
-// let bellman_ford = new BellmanFord(grafo);
+let bellman_ford = new BellmanFord(grafo);
 
-// bellman_ford.encontrar_caminhos(5);
+let ciclo_negativo = bellman_ford.encontrar_caminhos(5);
 
-// bellman_ford.mostrar_resultado();
+bellman_ford.mostrar_resultado();
 
-let grafo = new Grafo(8, false);
+console.log(ciclo_negativo);
 
-grafo.adicionarAresta(0, 1);
-grafo.adicionarAresta(1, 2);
+// let grafo = new Grafo(8, false);
 
-grafo.adicionarAresta(4, 5);
-grafo.adicionarAresta(5, 6);
+// grafo.adicionarAresta(0, 1);
+// grafo.adicionarAresta(1, 2);
 
-let componentes_conectados = new ComponentesConectados(grafo);
+// grafo.adicionarAresta(4, 5);
+// grafo.adicionarAresta(5, 6);
 
-componentes_conectados.encontrar_componentes();
+// let componentes_conectados = new ComponentesConectados(grafo);
 
-componentes_conectados.mostraResultado();
+// componentes_conectados.encontrar_componentes();
+
+// componentes_conectados.mostraResultado();
