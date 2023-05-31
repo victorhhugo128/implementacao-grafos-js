@@ -309,6 +309,7 @@ class BellmanFord{
     constructor(grafo){
         this.grafo = grafo;
         this.vertices = Array(this.grafo.nVertices()).fill().map((_, indice) => [Number.MAX_SAFE_INTEGER, null]); // this.vertices = [[distancia, antecessor]]; indice = vertice
+        this.ciclo_negativo = null;
     }
 
     encontrar_caminhos(vertice_inicial){
@@ -330,6 +331,22 @@ class BellmanFord{
                 }
             }
         }
+
+        for(let vertice of this.grafo.vertices){
+            adjacencia = vertice.prox_no;
+
+            while(adjacencia != null){
+                if(this.vertices[adjacencia.rotulo][0] > this.vertices[vertice.rotulo][0] + adjacencia.peso){
+                    this.ciclo_negativo = true;
+                }
+            }
+        }
+
+        if(this.ciclo_negativo == null){
+            this.ciclo_negativo = false;
+        }
+
+        return this.ciclo_negativo;
     }
 
     mostrar_resultado(){
