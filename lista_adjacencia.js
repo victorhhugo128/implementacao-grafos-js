@@ -435,6 +435,54 @@ class ComponentesConectados{
     }
 }
 
+class Warshall{
+    constructor(grafo){
+        this.grafo = grafo;
+        this.matriz = Array(this.grafo.nVertices()).fill().map((_, indice) => Array(this.grafo.nVertices));   // cria a matriz
+        for(let linha in this.matriz){   // popula a mtriz com valores false
+            for(let coluna in this.matriz){
+                this.matriz[linha][coluna] = false;
+            }
+        }
+        for(let adjacencia of this.grafo.vertices){ // adiciona as adjacencias à matriz
+            let no_atual = adjacencia.prox_no;
+            while(no_atual != null){
+                console.log(no_atual)
+                this.matriz[adjacencia.rotulo][no_atual.rotulo] = true;
+                no_atual = no_atual.prox_no;
+            }
+        }
+    }
+
+    encontrar_fecho_transitivo(){
+        let n_vertices = this.grafo.nVertices();
+        for(let vertice_intermediario = 0; vertice_intermediario < n_vertices; vertice_intermediario++){
+            for(let vertice1 = 0; vertice1 < n_vertices; vertice1++){
+                for(let vertice2 = 0; vertice2 < n_vertices; vertice2++){
+                    this.matriz[vertice1][vertice2] = this.matriz[vertice1][vertice2] || (this.matriz[vertice1][vertice_intermediario] && this.matriz[vertice_intermediario][vertice2]);
+                }
+            }
+        }
+    }
+
+    mostra_fecho_transitivo(){
+        let n_vertices = this.grafo.nVertices();
+        for(let linha = 0; linha < n_vertices; linha++){
+            process.stdout.write("| ");
+            for(let coluna = 0; coluna < n_vertices; coluna++){
+                if(this.matriz[linha][coluna]){
+                    process.stdout.write("1 ");
+                    continue;
+                }
+                process.stdout.write("0 ");
+            }
+            process.stdout.write("|\n");
+        }
+    }
+
+
+}
+
 // let lista = new Grafo(5, false);
 
 // lista.mostrarVertices();
@@ -524,24 +572,24 @@ class ComponentesConectados{
 // console.log(floyd_warshall.matriz);
 
 
-let grafo = new Grafo(6, true);
+// let grafo = new Grafo(6, true);
 
-grafo.adicionarAresta(0, 2, 2);
-grafo.adicionarAresta(1, 0, 1);
-grafo.adicionarAresta(2, 1, -2);
-grafo.adicionarAresta(3, 0, -4);
-grafo.adicionarAresta(3, 2, -1);
-grafo.adicionarAresta(4, 3, 1);
-grafo.adicionarAresta(5, 4, 8);
-grafo.adicionarAresta(5, 0, 10);
+// grafo.adicionarAresta(0, 2, 2);
+// grafo.adicionarAresta(1, 0, 1);
+// grafo.adicionarAresta(2, 1, -2);
+// grafo.adicionarAresta(3, 0, -4);
+// grafo.adicionarAresta(3, 2, -1);
+// grafo.adicionarAresta(4, 3, 1);
+// grafo.adicionarAresta(5, 4, 8);
+// grafo.adicionarAresta(5, 0, 10);
 
-let bellman_ford = new BellmanFord(grafo);
+// let bellman_ford = new BellmanFord(grafo);
 
-let ciclo_negativo = bellman_ford.encontrar_caminhos(5);
+// let ciclo_negativo = bellman_ford.encontrar_caminhos(5);
 
-bellman_ford.mostrar_resultado();
+// bellman_ford.mostrar_resultado();
 
-console.log(ciclo_negativo);
+// console.log(ciclo_negativo);
 
 // let grafo = new Grafo(8, false);
 
@@ -556,3 +604,17 @@ console.log(ciclo_negativo);
 // componentes_conectados.encontrar_componentes();
 
 // componentes_conectados.mostraResultado();
+
+let grafo_teste = new Grafo(5, true);
+
+grafo_teste.adicionarAresta(0, 1);
+grafo_teste.adicionarAresta(1, 2);
+grafo_teste.adicionarAresta(2, 0);
+grafo_teste.adicionarAresta(2, 3);
+grafo_teste.adicionarAresta(4, 0);
+grafo_teste.adicionarAresta(4, 2);
+
+let warshall = new Warshall(grafo_teste);
+
+warshall.encontrar_fecho_transitivo();
+warshall.mostra_fecho_transitivo();
